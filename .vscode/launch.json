@@ -1,0 +1,22 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Run File Tag Project",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/../file_tag_build/file_tag_project",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}/../file_tag_build",
+      "environment": [],
+      "externalConsole": true,
+      "MIMode": "gdb",
+      "setupCommands": [
+        { "description": "Enable pretty printing", "text": "-enable-pretty-printing", "ignoreFailures": true }
+      ],
+      "preLaunchTask": "CMake Build",
+      "miDebuggerPath": "/usr/bin/gdb"
+    }
+  ]
+}
