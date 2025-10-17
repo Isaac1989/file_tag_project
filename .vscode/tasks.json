@@ -5,9 +5,9 @@
       "label": "CMake Configure",
       "type": "shell",
       "command": "cmake",
-      "args": ["-DCMAKE_BUILD_TYPE=Debug","../file_tag_project"],
+      "args": ["-DCMAKE_BUILD_TYPE=Debug",".."],
       "options": {
-        "cwd": "${workspaceFolder}/../file_tag_build"
+        "cwd": "${workspaceFolder}/build"
       },
       "problemMatcher": []
     },
@@ -17,7 +17,7 @@
       "command": "cmake",
       "args": ["--build", "."],
       "options": {
-        "cwd": "${workspaceFolder}/../file_tag_build"
+        "cwd": "${workspaceFolder}/build"
       },
       "group": {
         "kind": "build",
