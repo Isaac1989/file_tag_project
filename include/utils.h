@@ -10,5 +10,5 @@
 
 std::string str_to_lower(const std::string &str);
 bool containsSubStr(const std::string &s, const std::string &sub);
-void testingFileSystem();
+void runFileSystemTests();
 void tesingFoldersAndFiles();

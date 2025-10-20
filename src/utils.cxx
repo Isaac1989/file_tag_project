@@ -22,29 +22,80 @@ bool containsSubStr(const std::string &s, const std::string &sub) {
 }
 
 
-void testingFileSystem(){
-        FileSystem fs;
+void runFileSystemTests() {
+    std::cout << "=== Stage 6: Testing FileSystem ===\n";
 
-    auto *email = fs.createFolder("email");
-    auto *spam  = fs.createFolder("spam");
+    FileSystem fs;
 
-    auto *f1 = fs.createFile("email", "file1.txt");
-    auto *f2 = fs.createFile("email", "file2.txt");
-    auto *f3 = fs.createFile("spam", "file3.txt");
+    // 1️⃣ Folder and File creation
+    auto* folderA = fs.createFolder("Projects");
+    auto* folderB = fs.createFolder("Archive");
 
-    fs.createTag("red");
-    fs.createTag("green");
-    fs.tagFile("email", "file1.txt", "red");
-    fs.tagFile("spam", "file3.txt", "green");
+    fs.createFile("Projects", "notes.txt");
+    fs.createFile("Projects", "todo.txt");
+    fs.createFile("Projects", "report.pdf");
 
-    fs.moveFile("email", "spam", "file2.txt");
-
+    std::cout << "\n[1] Initial Folder Structure:\n";
     fs.printSummary();
 
-    auto results = fs.findFilesByTag("red");
-    std::cout << "\nFiles tagged 'red':\n";
-    for (auto *f : results) std::cout << " - " << f->getName() << "\n";
+    // 2️⃣ Tag creation and linking
+    auto devTag = fs.createTag("Development");
+    auto urgentTag = fs.createTag("Urgent");
+
+    fs.tagFile("Projects", "notes.txt", "Development");
+    fs.tagFile("Projects", "todo.txt", "Urgent");
+    fs.tagFile("Projects", "report.pdf", "Development");
+
+    std::cout << "\n[2] After Tagging Files:\n";
+    fs.printSummary();
+
+    // 3️⃣ Search by tag or name
+    std::cout << "\n[3] Search Results:\n";
+
+    auto devFiles = fs.findFilesByTag("Development");
+    std::cout << "Files tagged as 'Development':\n";
+    for (const auto* f : devFiles)
+        std::cout << " - " << f->getName() << "\n";
+
+    auto reportFiles = fs.findFilesByName("report");
+    std::cout << "\nFiles containing 'report':\n";
+    for (const auto* f : reportFiles)
+        std::cout << " - " << f->getName() << "\n";
+
+    // 4️⃣ File move and retagging
+    fs.moveFile("Projects", "Archive", "report.pdf");
+
+    std::cout << "\n[4] After Moving 'report.pdf' to Archive:\n";
+    fs.printSummary();
+
+    fs.untagFile("Archive", "report.pdf", "Development");
+
+    std::cout << "\n[5] After Removing 'Development' Tag from report.pdf:\n";
+    fs.printSummary();
+
+    // 5️⃣ Deletion checks
+    fs.deleteFile("Projects", "todo.txt");
+    fs.deleteFolder("Archive");
+
+    std::cout << "\n[6] After Deletions:\n";
+    fs.printSummary();
+
+    // 6️⃣ Optional copy/move semantics validation
+    std::cout << "\n[7] Copying Folder 'Projects' to 'Backup'...\n";
+    if (auto* original = fs.getFolder("Projects")) {
+        Folder backup = *original;
+        std::cout << backup;
+    }
+
+    std::cout << "\n[8] Moving Folder 'Projects' to 'Temp'...\n";
+    if (auto* original = fs.getFolder("Projects")) {
+        Folder temp = std::move(*original);
+        std::cout << temp;
+    }
+
+    std::cout << "\n=== End of FileSystem Tests ===\n";
 }
+
 
 void tesingFoldersAndFiles(){
     Folder email{"email"};

@@ -17,7 +17,7 @@ using std::string;
 
 
 int main(int argc, char* argv[]){
-    testingFileSystem();
+    runFileSystemTests();
 
     return 0;
     
