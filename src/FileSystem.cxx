@@ -1,5 +1,7 @@
 #include "FileSystem.h"
 #include "utils.h"
+#include <fstream>
+#include <iomanip>
 
 using std::string;
 using std::vector;
@@ -43,6 +45,14 @@ File* FileSystem::createFile(const std::string &folderName, const std::string &f
     if(!pFolder) throw std::runtime_error("Folder not found");
     
     File *pFile = pFolder->addFile(fileName);
+    return pFile;
+}
+
+File* FileSystem::createFile(const std::string &folderName, const std::string &fileName, std::chrono::time_point<std::chrono::system_clock> dt){
+    auto pFolder = findFolderByName(folderName);
+    if(!pFolder) throw std::runtime_error("Folder not found");
+    
+    File *pFile = pFolder->addFile(fileName, dt);
     return pFile;
 }
 
@@ -139,4 +149,52 @@ Folder* FileSystem::findFolderByName(const std::string &name){
     auto it = std::find_if(folders.begin(), folders.end(), [&name](const std::unique_ptr<Folder> &f){ return f->getName() == name;});
     if(it != folders.end()) return it->get();
     return nullptr;
+}
+
+// Conversion to json
+void to_json(json& j, const FileSystem& fs) {
+    std::vector<json> foldersJson;
+    for (const auto& folder : fs.getFolders())
+        foldersJson.push_back(*folder);
+
+    j = json{{"folders", foldersJson}};
+}
+
+
+void from_json(const json& j, FileSystem& fs) {
+    // clear current state if needed
+    for (auto& f : j.at("folders")) {
+        std::string folderName = f.at("name");
+        Folder* pFolder = fs.createFolder(folderName);
+
+        for (auto& fileJson : f.at("files")) {
+            std::string fileName = fileJson.at("name");
+            std::chrono::time_point<std::chrono::system_clock> dt = deserialize_time_point(fileJson.at("created_at"));
+            File* pFile = fs.createFile(folderName, fileName, dt);
+
+            // recreate tags
+            for (auto& tagName : fileJson.at("tags")) {
+                auto tag = fs.getTag(tagName);
+                pFile->addTag(tag);
+            }
+        }
+    }
+}
+
+
+// Saving filesystem to disk
+void FileSystem::saveToFile(const std::string &filename) const{
+    std::ofstream os{filename};
+    json j = *this;
+    os << std::setw(4) << j;
+    os.close();
+}
+
+void FileSystem::loadFromFile(const std::string &filename){
+    std::ifstream is{filename};
+    if(is.fail()) throw std::runtime_error("File not found");
+    json j;
+    is >> j;
+    *this = j.get<FileSystem>();
+    is.close();    
 }

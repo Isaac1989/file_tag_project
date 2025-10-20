@@ -24,6 +24,7 @@ public:
 
 
   File* addFile(const std::string &fileName);
+  File* addFile(const std::string, std::chrono::time_point<std::chrono::system_clock> dt);
   File* addFile(File& file);
   File* addFile(std::unique_ptr<File> file){
     auto pFile = file.get();
@@ -70,3 +71,5 @@ inline bool operator==(const Folder& lhs, const Folder& rhs) {
 inline bool operator<(const Folder& lhs, const Folder& rhs) {
     return lhs.getName() < rhs.getName();
 }
+
+void to_json(json& j, const Folder& folder);

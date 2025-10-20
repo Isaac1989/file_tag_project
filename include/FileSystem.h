@@ -12,6 +12,10 @@
 #include <iostream>
 
 class FileSystem {
+friend void to_json(json& j, const FileSystem& fs);
+friend void from_json(json& j,FileSystem& fs);
+
+
 public:
     // Folder management
     Folder* createFolder(const std::string &name);
@@ -21,6 +25,7 @@ public:
 
     // File management
     File* createFile(const std::string &folderName, const std::string &fileName);
+    File* createFile(const std::string &folderName, const std::string &fileName, std::chrono::time_point<std::chrono::system_clock> dt);
     bool deleteFile(const std::string &folderName, const std::string &fileName);
     bool moveFile(const std::string &srcFolder, const std::string &destFolder, const std::string &fileName);
 
@@ -37,9 +42,17 @@ public:
     // Display
     void printSummary(std::ostream &os = std::cout) const;
 
+    void saveToFile(const std::string &filename) const;
+    void loadFromFile(const std::string &filename);
+
+
 private:
     std::set<std::unique_ptr<Folder>> folders;
     std::set<std::shared_ptr<Tag>> tags;
 
     Folder* findFolderByName(const std::string &name);
 };
+
+
+void to_json(json& j, const FileSystem& fs);
+void from_json(const json& j, FileSystem& fs);

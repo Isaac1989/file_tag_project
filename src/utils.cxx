@@ -2,6 +2,7 @@
 #include "FileSystem.h"
 #include <string>
 
+
 using std::string;
 using std::cout;
 using std::endl;
@@ -155,4 +156,17 @@ void tesingFoldersAndFiles(){
     
     email.removeFile(f1_ptr);
     pYellow->listFiles();
+}
+
+// Function to serialize a time_point
+long long serialize_time_point(const std::chrono::system_clock::time_point& tp) {
+    auto duration_since_epoch = tp.time_since_epoch();
+    auto milliseconds_since_epoch = std::chrono::duration_cast<std::chrono::milliseconds>(duration_since_epoch);
+    return milliseconds_since_epoch.count();
+}
+
+// Function to deserialize a time_point
+std::chrono::system_clock::time_point deserialize_time_point(long long milliseconds_count) {
+    auto duration_since_epoch = std::chrono::milliseconds(milliseconds_count);
+    return std::chrono::system_clock::time_point(duration_since_epoch);
 }

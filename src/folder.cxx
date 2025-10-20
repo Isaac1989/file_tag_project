@@ -9,12 +9,20 @@ using std::vector;
 using std::string;
 
 
-  File* Folder::addFile(const std::string &fileName){ 
+File* Folder::addFile(const std::string &fileName){ 
     auto f = std::make_unique<File>(fileName);
     File *pFile =  f.get();
     files.insert(std::move(f));
     return pFile;
   }
+
+File* Folder::addFile(const std::string fileName, std::chrono::time_point<std::chrono::system_clock> dt){
+    auto f = std::make_unique<File>(fileName, dt);
+    File *pFile =  f.get();
+    files.insert(std::move(f));
+    return pFile;
+}
+
 
 void Folder::removeFile(File *pFile) { 
     auto it = std::find_if(files.begin(), files.end(), [pFile](const std::unique_ptr<File> &f){ return f.get() == pFile;});
@@ -117,4 +125,17 @@ bool Folder::moveFileTo(Folder &destination, const File *file) {
     }
 
     return false;
+}
+
+
+// Serialization of Folder
+void to_json(json& j, const Folder& folder) {
+    std::vector<json> filesJson;
+    for (const auto& f : folder.getFiles())  // assume getFiles() returns set<unique_ptr<File>>&
+        filesJson.push_back(*f);
+
+    j = json{
+        {"name", folder.getName()},
+        {"files", filesJson}
+    };
 }

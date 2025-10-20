@@ -3,13 +3,17 @@
 #include <set>
 #include <memory>
 #include <iostream>
+#include <vector>
+
+#include "json.hpp"
+
+using json = nlohmann::json;
 
 class File; // Forward declarations
 
 class Tag{
 friend class File;
 friend std::ostream& operator<<(std::ostream& os, const Tag& tag);
-
 
 public:
     explicit Tag(const std::string tname): name{std::move(tname)}{}
@@ -43,3 +47,5 @@ inline std::ostream& operator<<(std::ostream& os, const Tag& tag) {
     os << "Tag: " << tag.name << " (" << tag.files.size() << " files)";
     return os;
 }
+
+

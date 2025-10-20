@@ -88,3 +88,16 @@ std::ostream& operator<<(std::ostream& os, const File& file){
     return os;
 
 }
+
+
+void to_json(json& j, const File& f) {
+    std::vector<std::string> tagNames;
+    for (const auto& t : f.getTags())
+        tagNames.push_back(t->getName());
+
+    j = json{
+        {"name", f.getName()},
+        {"created_at", serialize_time_point(f.created_at)},
+        {"tags", tagNames}
+    };
+}
