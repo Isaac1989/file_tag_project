@@ -75,7 +75,7 @@ int main(int argc, char* argv[]){
 
 
     // Save fs to dist
-    std::string filename {"/media/isaac/DATA/Documents/file_tag_project/build/testfs.json"};
+    std::string filename {"testfs.json"};
     fs.saveToFile(filename);
     FileSystem fs2;
     fs2.loadFromFile(filename);
